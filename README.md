@@ -61,7 +61,67 @@ contract Core is Base
 * Ownable - Define an owner for all the contracts.
 * Secondary - Allows contract to be transferred owners.
 
+## Part 3: Test smart contract code coverage
 
+### Requirement: Smart contract has associated tests
 
+- harvestItem()
+- processItem()
+- packItem()
+- addItem()
+- buyItem()
+- shiptItem()
+- receiveItem()
+- purchaseItem()
+- fetchItemBufferOne()
+- sfetchItemBufferTwo()
+
+## Part 4: Deploy smart contracts on public test network
+
+### Requirement 1: Deploy smart contract on a public test network
+
+* Add your rinkeby networks inside truffle.js.
+
+```
+const HDWallet = require('truffle-hdwallet-provider');
+
+const fs = require('fs');
+const mnemonic = fs.readFileSync(".secret").toString().trim();
+const infuraKey = fs.readFileSync(".infuraKey").toString().trim();
+
+module.exports = {
+  networks: {
+    development: {
+      host: "127.0.0.1",
+      port: 8545,
+      network_id: "*" // Match any network id
+    },
+    rinkeby: {
+      provider: () => new HDWallet(mnemonic, `https://rinkeby.infura.io/v3/${infuraKey}`),
+      network_id: 4,       // rinkeby's id
+      gas: 4500000,        // rinkeby has a lower block limit than mainnet
+      gasPrice: 10000000000
+    }
+  },
+};
+```
+
+* Create .secret with your secret and .infuraKey with your infuraID
+
+* Run `truffle migrate --reset --network rinkeby`
+
+* Outlook should be similar to `contract_addresses.md`
+
+### Requirement 2: Submit Contract Address
+
+- Please see `contract_addresses.md` file for details
+
+## Part 5: Modify client code to interact with smart contract
+
+### Requirement: Configure client code for each actor
+
+- Submit a product for shipment (farmer to the distributor, distributor to retailer, etc).
+- Receive product from shipment.
+- Validate the authenticity of the product.
 
  

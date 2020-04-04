@@ -1,13 +1,13 @@
 pragma solidity >=0.4.24;
 
-import '../coffeecore/Ownable.sol';
+// import '../coffeecore/Ownable.sol';
 import '../coffeeaccesscontrol/FarmerRole.sol';
 import '../coffeeaccesscontrol/DistributorRole.sol';
 import '../coffeeaccesscontrol/RetailerRole.sol';
 import '../coffeeaccesscontrol/ConsumerRole.sol';
 
 // Define a contract 'Supplychain'
-contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, RetailerRole{
+contract SupplyChain is ConsumerRole, DistributorRole, FarmerRole, RetailerRole{
 
   // Define 'owner'
   address owner;
@@ -56,7 +56,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     State   itemState;  // Product State as represented in the enum above
     address distributorID;  // Metamask-Ethereum address of the Distributor
     address retailerID; // Metamask-Ethereum address of the Retailer
-    address consumerID; // Metamask-Ethereum address of the Consumer
+    address payable consumerID; // Metamask-Ethereum address of the Consumer
   }
 
   // Define 8 events with the same 8 state values and accept 'upc' as input argument
@@ -92,7 +92,7 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     _;
     uint _price = items[_upc].productPrice;
     uint amountToReturn = msg.value - _price;
-    payable(items[_upc].consumerID).transfer(amountToReturn);
+    (items[_upc].consumerID).transfer(amountToReturn);
   }
 
   // Define a modifier that checks if an item.state of a upc is Harvested
@@ -218,7 +218,6 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
   // Call modifier to check if upc has passed previous supply chain stage
   packed(_upc)
   // Call modifier to verify caller of this function
-  verifyCaller(items[_upc].ownerID)
   onlyFarmer
   {
     // Update the appropriate fields
@@ -256,7 +255,6 @@ contract SupplyChain is Ownable, ConsumerRole, DistributorRole, FarmerRole, Reta
     // Call modifier to check if upc has passed previous supply chain stage
     sold(_upc)
     // Call modifier to verify caller of this function
-    verifyCaller(items[_upc].ownerID)
     onlyDistributor
     {
     // Update the appropriate fields
